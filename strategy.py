@@ -1,6 +1,8 @@
 import yfinance as yf
 import pandas as pd
 import ta
+import time
+from datetime import datetime, timezone
 
 symbols = {
     "EURUSD": "EURUSD=X",
@@ -8,6 +10,7 @@ symbols = {
     "BTCUSD": "BTC-USD"
 }
 
+# last_signal = {s: "HOLD" for s in symbols}
 def get_data(symbol):
     df = yf.download(symbol, interval="5m", period="2d", progress=False)
 
@@ -22,6 +25,7 @@ def get_data(symbol):
 
     stoch = ta.momentum.StochasticOscillator(df["High"], df["Low"], df["Close"])
     df["stoch"] = stoch.stoch()
+    df["stoch_signal"] = stoch.stoch_signal()
 
     macd = ta.trend.MACD(df["Close"])
     df["macd"] = macd.macd()
@@ -76,15 +80,30 @@ def analyze(pair, yf_symbol):
 
     if call_score >= 2:
         signal = "BUY"
-        strength = ["WEAK","MEDIUM","STRONG","STRONG"][call_score-1]
+        if call_score == 4:
+            strength = "STRONG"
+        elif call_score == 3:
+            strength = "MEDIUM"
+        else:
+            strength = "WEAK"
 
     elif put_score >= 2:
         signal = "SELL"
-        strength = ["WEAK","MEDIUM","STRONG","STRONG"][put_score-1]
+        if put_score == 4:
+            strength = "STRONG"
+        elif put_score == 3:
+            strength = "MEDIUM"
+        else:
+            strength = "WEAK"
+            
+    entry_time = datetime.now(timezone.utc).strftime("%H:%M UTC")        
 
     return {
         "pair": pair,
         "price": price,
         "signal": signal,
-        "strength": strength
+        "strength": strength,
+        "entry_time": entry_time,
+        "time_frame": "5MIN",
+        "expiry": "5 Minutes"
     }
