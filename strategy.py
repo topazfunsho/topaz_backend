@@ -10,7 +10,7 @@ symbols = {
     "BTCUSD": "BTC-USD"
 }
 
-# last_signal = {s: "HOLD" for s in symbols}
+last_signal = {s: "HOLD" for s in symbols}
 def get_data(symbol):
     df = yf.download(symbol, interval="5m", period="2d", progress=False)
 
@@ -98,12 +98,40 @@ def analyze(pair, yf_symbol):
             
     entry_time = datetime.now(timezone.utc).strftime("%H:%M UTC")        
 
-    return {
-        "pair": pair,
-        "price": price,
-        "signal": signal,
-        "strength": strength,
-        "entry_time": entry_time,
-        "time_frame": "5MIN",
-        "expiry": "5 Minutes"
-    }
+    if signal != "HOLD" and signal != last_signal[pair]:
+        
+        msg = {
+            "pair": pair,
+            "price": price,
+            "signal": signal,
+            "strength": strength,
+            "entry_time": entry_time,
+            "time_frame": "5MIN",
+            "expiry": "5 Minutes"
+        }
+        
+    return msg
+    
+# def in_trading_session():
+#     now = datetime.now(timezone.utc).hour
+
+#     london_open = 7
+#     london_close = 16
+#     ny_open = 12
+#     ny_close = 21
+
+#     if (london_open <= now <= london_close) or (ny_open <= now <= ny_close):
+#         return True
+#     return False
+
+# while True:
+#     get_updates()
+
+#     if bot_running:
+#         if in_trading_session():
+#             for pair, yf_symbol in symbols.items():
+#                 analyze(pair, yf_symbol)
+#         else:
+#             print("⏰ Outside trading session. Bot waiting...")
+
+#     time.sleep(60)

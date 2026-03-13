@@ -16,6 +16,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+bot_running = False
+
+
+@app.post("/stop")
+def stop_bot():
+    global bot_running
+    bot_running = False
+    return {"message": "Bot stopped", "status": bot_running}
+
+
+@app.get("/status")
+def bot_status():
+    return {"status": bot_running}
+
 @app.get("/")
 def home():
     return {"message": "Trading Signal API Running"}
