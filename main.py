@@ -6,6 +6,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173"
+    "https://topaz-pwa.vercel.app/"
 ]
 
 app.add_middleware(
