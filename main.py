@@ -23,15 +23,12 @@ bot_running = False
 def stop_bot():
     global bot_running
     bot_running = False
-    return {"message": "Bot stopped", "status": "program stopped"}
+    return {"message": "Bot stopped", "status": bot_running}
 
 
 @app.get("/status")
 def bot_status():
-    if stop_bot:
-        return {"status": "program stopped"}
-    else:
-        return {"status": "program running"}
+    return {"status": bot_running}
 
 @app.get("/")
 def home():
