@@ -43,8 +43,15 @@ def all_signals():
     
     return [
         {
+            "price": "1234.433",
             "pair": "EURUSD",
             "signal": "CALL",
+            "strength": "Medium"
+        },
+        {
+            "price": "14534.433",
+            "pair": "GBPUSD",
+            "signal": "PUT",
             "strength": "Medium"
         }
     ]
