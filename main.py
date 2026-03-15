@@ -40,7 +40,7 @@ def home():
 
 @app.get("/signals")
 def all_signals():
-
+    
     return [
         {
             "pair": "EURUSD",
@@ -48,6 +48,13 @@ def all_signals():
             "strength": "Medium"
         }
     ]
+
+    # results = []
+
+    # for pair, yf_symbol in symbols.items():
+    #     results.append(analyze(pair, yf_symbol))
+
+    # return results
 
 
 @app.get("/signal/{pair}")
