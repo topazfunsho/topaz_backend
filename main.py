@@ -41,29 +41,29 @@ def home():
 @app.get("/signals")
 def all_signals():
     
-    return [
-        {
-            "id": "1",
-            "price": "1234.433",
-            "pair": "EURUSD",
-            "signal": "CALL",
-            "strength": "Medium"
-        },
-        {
-            "id": "2",
-            "price": "14534.433",
-            "pair": "GBPUSD",
-            "signal": "PUT",
-            "strength": "Medium"
-        }
-    ]
+    # return [
+    #     {
+    #         "id": "1",
+    #         "price": "1234.433",
+    #         "pair": "EURUSD",
+    #         "signal": "CALL",
+    #         "strength": "Medium"
+    #     },
+    #     {
+    #         "id": "2",
+    #         "price": "14534.433",
+    #         "pair": "GBPUSD",
+    #         "signal": "PUT",
+    #         "strength": "Medium"
+    #     }
+    # ]
 
-    # results = []
+    results = []
 
-    # for pair, yf_symbol in symbols.items():
-    #     results.append(analyze(pair, yf_symbol))
+    for pair, yf_symbol in symbols.items():
+        results.append(analyze(pair, yf_symbol))
 
-    # return results
+    return results
 
 
 @app.get("/signal/{pair}")
