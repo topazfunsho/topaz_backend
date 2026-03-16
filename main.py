@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from strategy import analyze, symbols
 from fastapi.middleware.cors import CORSMiddleware
+import time
+from datetime import datetime, timezone
 
 app = FastAPI()
 
@@ -36,34 +38,32 @@ def bot_status():
 
 @app.get("/")
 def home():
-    return {"message": "Trading Signal API Running"}
+    return {"message": "Trading Signal server Running"}
 
 @app.get("/signals")
 def all_signals():
     
-    # return [
-    #     {
-    #         "id": "1",
-    #         "price": "1234.433",
-    #         "pair": "EURUSD",
-    #         "signal": "CALL",
-    #         "strength": "Medium"
-    #     },
-    #     {
-    #         "id": "2",
-    #         "price": "14534.433",
-    #         "pair": "GBPUSD",
-    #         "signal": "PUT",
-    #         "strength": "Medium"
-    #     }
-    # ]
+    return [
+        {
+            "price": "1234.433",
+            "pair": "EURUSD",
+            "signal": "CALL",
+            "strength": "Medium"
+        },
+        {
+            "price": "14534.433",
+            "pair": "GBPUSD",
+            "signal": "PUT",
+            "strength": "Medium"
+        }
+    ]
 
-    results = []
+    # results = []
 
-    for pair, yf_symbol in symbols.items():
-        results.append(analyze(pair, yf_symbol))
+    # for pair, yf_symbol in symbols.items():
+    #     results.append(analyze(pair, yf_symbol))
 
-    return results
+    # return results
 
 
 @app.get("/signal/{pair}")
@@ -75,3 +75,26 @@ def single_signal(pair: str):
         return {"error": "Pair not supported"}
 
     return analyze(pair, symbols[pair])
+
+def in_trading_session():
+    now = datetime.now(timezone.utc).hour
+
+    london_open = 7
+    london_close = 16
+    ny_open = 12
+    ny_close = 21
+
+    if (london_open <= now <= london_close) or (ny_open <= now <= ny_close):
+        return True
+    return False
+
+while True:
+
+    if bot_running:
+        if in_trading_session():
+            for pair, yf_symbol in symbols.items():
+                analyze(pair, yf_symbol)
+        else:
+            print("⏰ Outside trading session. Bot waiting...")
+
+    time.sleep(60)

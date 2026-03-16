@@ -112,26 +112,3 @@ def analyze(pair, yf_symbol):
         
     return msg
     
-# def in_trading_session():
-#     now = datetime.now(timezone.utc).hour
-
-#     london_open = 7
-#     london_close = 16
-#     ny_open = 12
-#     ny_close = 21
-
-#     if (london_open <= now <= london_close) or (ny_open <= now <= ny_close):
-#         return True
-#     return False
-
-# while True:
-#     get_updates()
-
-#     if bot_running:
-#         if in_trading_session():
-#             for pair, yf_symbol in symbols.items():
-#                 analyze(pair, yf_symbol)
-#         else:
-#             print("⏰ Outside trading session. Bot waiting...")
-
-#     time.sleep(60)
