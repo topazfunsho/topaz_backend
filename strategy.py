@@ -36,7 +36,6 @@ def get_data(symbol):
 
 
 def analyze(pair, yf_symbol):
-
     df = get_data(yf_symbol)
     last = df.iloc[-1]
 
@@ -49,6 +48,9 @@ def analyze(pair, yf_symbol):
     macd = float(last["macd"])
     macd_signal = float(last["macd_signal"])
 
+    # -------------------------
+    # TREND LOGIC
+    # -------------------------
     uptrend = price > lips > teeth > jaw
     downtrend = price < lips < teeth < jaw
 
@@ -75,40 +77,38 @@ def analyze(pair, yf_symbol):
     if macd < macd_signal:
         put_score += 1
 
+    # -------------------------
+    # SIGNAL DECISION
+    # -------------------------
     signal = "HOLD"
-    strength = ""
+    strength = "NONE"
 
     if call_score >= 2:
         signal = "BUY"
-        if call_score == 4:
-            strength = "STRONG"
-        elif call_score == 3:
-            strength = "MEDIUM"
-        else:
-            strength = "WEAK"
+        strength = ["WEAK","MEDIUM","STRONG","STRONG"][call_score-1]
 
     elif put_score >= 2:
         signal = "SELL"
-        if put_score == 4:
-            strength = "STRONG"
-        elif put_score == 3:
-            strength = "MEDIUM"
-        else:
-            strength = "WEAK"
-            
-    entry_time = datetime.now(timezone.utc).strftime("%H:%M UTC")        
+        strength = ["WEAK","MEDIUM","STRONG","STRONG"][put_score-1]
 
+    entry_time = datetime.now(timezone.utc).strftime("%H:%M UTC")
+
+    result = {
+        "pair": pair,
+        "price": round(price, 5),
+        "signal": signal,
+        "strength": strength,
+        "time_frame": "5M",
+        "entry_time": entry_time,
+        "expiry": "5 min"
+    }
+
+    # -------------------------
+    # ONLY RETURN NEW SIGNALS
+    # -------------------------
     if signal != "HOLD" and signal != last_signal[pair]:
-        
-        msg = {
-            "pair": pair,
-            "price": price,
-            "signal": signal,
-            "strength": strength,
-            "entry_time": entry_time,
-            "time_frame": "5MIN",
-            "expiry": "5 Minutes"
-        }
-        
-    return msg
+        last_signal[pair] = signal
+        return result   # ✅ send to backend/frontend
+
+    return None   # ❌ ignore HOLD or duplicate signals    
     

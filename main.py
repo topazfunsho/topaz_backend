@@ -38,7 +38,6 @@ def home():
 
 @app.get("/signals")
 def get_signals():
-    print("📡 Sending signals:", signals_store)
     return signals_store   # return stored signals
 
 
@@ -73,32 +72,26 @@ def in_trading_session():
 # -----------------------------
 # BOT LOOP (BACKGROUND)
 # -----------------------------
+signals_store = []
+
 async def bot_loop():
     global bot_running, signals_store
 
     while True:
-        if bot_running:
-
-            print("🚀 Bot running...")
-
-            new_signals = []
+        if bot_running and in_trading_session():
 
             for pair, yf_symbol in symbols.items():
                 result = analyze(pair, yf_symbol)
 
-                if result:  # ✅ prevent None
-                    new_signals.append(result)
+                if result:  # ✅ only real signals
+                    signals_store.append(result)
 
-            if new_signals:  # ✅ only update if not empty
-                signals_store = new_signals
-                print("✅ Signals updated:", signals_store)
-            else:
-                print("⚠️ No signals generated")
+                    # optional: keep only latest 20 signals
+                    signals_store = signals_store[-20:]
 
-        else:
-            print("⏹️ Bot stopped")
+                    print("✅ New Signal:", result)
 
-        await asyncio.sleep(10)  # 🔥 reduce to 10s for testing
+        await asyncio.sleep(60)  # 🔥 reduce to 10s for testing
 
 
 # -----------------------------
