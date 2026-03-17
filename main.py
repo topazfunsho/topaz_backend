@@ -45,19 +45,19 @@ def get_signals():
 def start_bot():
     global bot_running
     bot_running = True
-    return {"message": "Bot started"}
+    return {"message": "Trading signal started"}
 
 
 @app.post("/stop")
 def stop_bot():
     global bot_running
     bot_running = False
-    return {"message": "Bot stopped"}
+    return {"message": "Signal stopped"}
 
 
 @app.get("/status")
 def bot_status():
-    return {"status": "running" if bot_running else "stopped"}
+    return {"status": "Signal running" if bot_running else "Signal stopped"}
 
 
 # -----------------------------
