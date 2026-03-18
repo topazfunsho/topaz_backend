@@ -1,7 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import ta
-import time
+
 from datetime import datetime, timezone
 
 symbols = {
@@ -81,34 +81,48 @@ def analyze(pair, yf_symbol):
     # SIGNAL DECISION
     # -------------------------
     signal = "HOLD"
-    strength = "NONE"
+    strength = ""
 
     if call_score >= 2:
         signal = "BUY"
-        strength = ["WEAK","MEDIUM","STRONG","STRONG"][call_score-1]
+        if call_score == 4:
+            strength = "STRONG"
+        elif call_score == 3:
+            strength = "MEDIUM"
+        else:
+            strength = "WEAK"
 
     elif put_score >= 2:
         signal = "SELL"
-        strength = ["WEAK","MEDIUM","STRONG","STRONG"][put_score-1]
+        if put_score == 4:
+            strength = "STRONG"
+        elif put_score == 3:
+            strength = "MEDIUM"
+        else:
+            strength = "WEAK"   
 
     entry_time = datetime.now(timezone.utc).strftime("%H:%M UTC")
 
-    result = {
-        "pair": pair,
-        "price": round(price, 5),
-        "signal": signal,
-        "strength": strength,
-        "time_frame": "5M",
-        "entry_time": entry_time,
-        "expiry": "5 min"
-    }
 
     # -------------------------
     # ONLY RETURN NEW SIGNALS
     # -------------------------
     if signal != "HOLD" and signal != last_signal[pair]:
+        result = {
+            "pair": pair,
+            "price": round(price, 5),
+            "signal": signal,
+            "strength": strength,
+            "time_frame": "5M",
+            "entry_time": entry_time,
+            "expiry": "5 min"
+        }
         last_signal[pair] = signal
         return result   # ✅ send to backend/frontend
 
    # return None   # ❌ ignore HOLD or duplicate signals    
+    
+    
+    
+
     
