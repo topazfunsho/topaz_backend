@@ -40,7 +40,10 @@ def home():
 def get_signals():
 
     for pair, yf_symbol in symbols.items():
-        signals_store.append(analyze(pair, yf_symbol))
+        signals_store = analyze(pair, yf_symbol)
+
+        if signals_store:  # ✅ only add valid signals
+            signals_store.append(signals_store)
 
     return signals_store  # return stored signals
 
