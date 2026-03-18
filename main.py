@@ -38,7 +38,11 @@ def home():
 
 @app.get("/signals")
 def get_signals():
-    return signals_store   # return stored signals
+
+    for pair, yf_symbol in symbols.items():
+        signals_store.append(analyze(pair, yf_symbol))
+
+    return signals_store  # return stored signals
 
 
 @app.post("/start")
@@ -72,7 +76,7 @@ def in_trading_session():
 # -----------------------------
 # BOT LOOP (BACKGROUND)
 # -----------------------------
-signals_store = []
+
 
 async def bot_loop():
     global bot_running, signals_store

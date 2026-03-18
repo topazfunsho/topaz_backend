@@ -117,7 +117,7 @@ def analyze(pair, yf_symbol):
             "entry_time": entry_time,
             "expiry": "5 min"
         }
-        last_signal[pair] = signal
+        # last_signal[pair] = signal
         return result   # ✅ send to backend/frontend
 
    # return None   # ❌ ignore HOLD or duplicate signals    
