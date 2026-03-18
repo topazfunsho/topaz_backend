@@ -120,7 +120,7 @@ def analyze(pair, yf_symbol):
         last_signal[pair] = signal
         return result   # ✅ send to backend/frontend
 
-   # return None   # ❌ ignore HOLD or duplicate signals    
+    return None   # ❌ ignore HOLD or duplicate signals    
     
     
     
