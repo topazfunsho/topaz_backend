@@ -95,7 +95,7 @@ async def bot_loop():
 
                     print("✅ New Signal:", result)
 
-        await asyncio.sleep(60)  # 🔥 reduce to 10s for testing
+        await asyncio.sleep(300)  # 🔥 every 5 minutes
 
 
 # -----------------------------
