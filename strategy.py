@@ -2,7 +2,7 @@ import yfinance as yf
 import pandas as pd
 import ta
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 symbols = {
     "EURUSD": "EURUSD=X",
@@ -101,7 +101,9 @@ def analyze(pair, yf_symbol):
         else:
             strength = "WEAK"   
 
-    entry_time = datetime.now(timezone.utc).strftime("%H:%M UTC")
+    wat = timezone(timedelta(hours=1))
+
+    entry_time = datetime.now(wat).strftime("%H:%M %p")
 
 
     # -------------------------
